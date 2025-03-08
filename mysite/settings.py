@@ -27,10 +27,7 @@ SECRET_KEY = 'django-insecure-6@hqwj^%ebr$bs855zipg-p_(g-^*47lq&y3wfdeu#8%^=_j30
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'web-production-bcb5.up.railway.app',
-    'studytrack.up.railway.app',
-]
+ALLOWED_HOSTS = ["studytrack.up.railway.app", "127.0.0.1"]
 
 
 # Application definition
@@ -80,7 +77,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': dj_database_url.config(default=os.getenv('postgresql://postgres:lVDwGeNcNRBhSTTRVwxJLBmBFIvYDerj@switchback.proxy.rlwy.net:18535/railway')),
     }
 
 
@@ -134,3 +131,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 LOGIN_REDIRECT_URL = 'task_list'
 LOGOUT_REDIRECT_URL = 'login'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://studytrack.up.railway.app",
+]
