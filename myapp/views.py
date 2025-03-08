@@ -20,14 +20,21 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()  # Use .get() to avoid KeyError
+        password = request.POST.get("password", "").strip()
+
+        if not username or not password:
+            return render(request, "login.html", {"error": "Username and password are required."})
+
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user:
             login(request, user)
-            return redirect('task_list')
-    return render(request, 'login.html')
+            return redirect("task_list")  # Redirect to the task list after login
+        else:
+            return render(request, "login.html", {"error": "Invalid username or password."})
+
+    return render(request, "login.html")
 
 @login_required
 def task_list(request):
