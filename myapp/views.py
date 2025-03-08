@@ -4,6 +4,8 @@ from django.views.decorators.csrf import csrf_exempt  # To allow AJAX requests w
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 from .models import Task
 from .forms import TaskForm, RegisterForm
 from datetime import timedelta, date
@@ -20,21 +22,22 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 def user_login(request):
+    form = AuthenticationForm()  # Initialize the form
+
     if request.method == "POST":
-        username = request.POST.get("username", "").strip()  # Use .get() to avoid KeyError
-        password = request.POST.get("password", "").strip()
+        form = AuthenticationForm(data=request.POST)  # Bind form with POST data
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
 
-        if not username or not password:
-            return render(request, "login.html", {"error": "Username and password are required."})
+            if user is not None:
+                login(request, user)
+                return redirect("task_list")  # Redirect after login
+            else:
+                messages.error(request, "Invalid username or password")
 
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect("task_list")  # Redirect to the task list after login
-        else:
-            return render(request, "login.html", {"error": "Invalid username or password."})
-
-    return render(request, "login.html")
+    return render(request, "login.html", {"form": form})  # Pass form to template
 
 @login_required
 def task_list(request):
