@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+<div class="container">
+    <h2>Task Details</h2>
+    <p><strong>Title:</strong> {{ task.title }}</p>
+    <p><strong>Description:</strong> {{ task.description }}</p>
+    <p><strong>Due Date:</strong> {{ task.due_date }}</p>
+    <p><strong>Hours Spent:</strong> {{ task.hours_spent }}</p>
+    <p><strong>Status:</strong> {% if task.completed %} Completed {% else %} Pending {% endif %}</p>
+
+    <a href="{% url 'edit_task' task.id %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'task_list' %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Edit Task</h2>
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="title">Task Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description">{{ task.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="due_date">Due Date</label>
+            <input type="date" class="form-control" id="due_date" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="hours">Estimated Hours</label>
+            <input type="number" class="form-control" id="hours" name="hours" value="{{ task.hours }}" {% if task.hours %}readonly{% endif %}>
+        </div>
+
+        <button type="submit" class="btn btn-success">Update Task</button>
+        <div class="mb-3">
+            <label class="form-label">Task Status</label>
+            <button id="status-btn" class="btn btn-{% if task.completed %}success{% else %}danger{% endif %}" 
+                    onclick="toggleStatus({{ task.id }})">
+                {% if task.completed %} ✅ Completed {% else %} ❌ Not Completed {% endif %}
+            </button>
+        </div>
+        
+        <script>
+        function toggleStatus(taskId) {
+            fetch(`/toggle-status/${taskId}/`, { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } })
+            .then(response => response.json())
+            .then(data => {
+                let btn = document.getElementById("status-btn");
+                if (data.status === "Completed") {
+                    btn.textContent = "✅ Completed";
+                    btn.className = "btn btn-success";
+                } else {
+                    btn.textContent = "❌ Not Completed";
+                    btn.className = "btn btn-danger";
+                }
+            });
+        }
+        </script>
+        
+    </form>
+</div>
+{% endblock %}
