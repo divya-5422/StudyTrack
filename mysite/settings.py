@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-6@hqwj^%ebr$bs855zipg-p_(g-^*47lq&y3wfdeu#8%^=_j30
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['studytrack.up.railway.app',]
+ALLOWED_HOSTS = ["studytrack.up.railway.app", "127.0.0.1"]
 
 
 # Application definition
@@ -131,3 +131,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 LOGIN_REDIRECT_URL = 'task_list'
 LOGOUT_REDIRECT_URL = 'login'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://studytrack.up.railway.app",
+]
+
